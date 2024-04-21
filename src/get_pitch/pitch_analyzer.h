@@ -9,6 +9,11 @@
 namespace upc {
   const float MIN_F0 = 20.0F;    ///< Minimum value of pitch in Hertzs
   const float MAX_F0 = 10000.0F; ///< Maximum value of pitch in Hertzs
+  
+  //umbrales determinación sorda sonora
+  float th1 = 0.95; //umbral para R(1)/R(0) r1norm
+  float th2 = 0.51; //umbral para R(P)/R(0) rmaxnorm
+  float th0 = -40; //umbral para potencia
 
   ///
   /// PitchAnalyzer: class that computes the pitch (in Hz) from a signal frame.
@@ -102,6 +107,8 @@ namespace upc {
     /// Sets pitch range: takes min_F0 and max_F0 in Hz, sets npitch_min and npitch_max in samples
 	///
     void set_f0_range(float min_F0, float max_F0);
+
+    
   };
 }
 #endif
