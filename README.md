@@ -56,6 +56,15 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
+  Parámetros               |                       |                          |
+  -------------------------| :-------------------: |--------------------------|
+  Number of frames         |11200 = 7045 unvoiced + 4155 voiced            
+  Unvoiced frames as voiced|402/7045               |5.71%                     |
+  Voiced frames as unvoiced|708/4155               |17.04%                    |
+  Gross voiced errors      |26/3447                |0.75%                     |
+  MSE of fine errors       |                       |2.03%  
+  **TOTAL**                |                       |**87.21%**
+
 Ejercicios de ampliación
 ------------------------
 
