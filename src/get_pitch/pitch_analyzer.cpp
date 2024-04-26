@@ -52,7 +52,6 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
-  
 
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.

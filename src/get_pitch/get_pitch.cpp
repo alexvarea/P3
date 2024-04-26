@@ -27,6 +27,9 @@ Usage:
 Options:
     -h, --help  Show this screen
     --version   Show the version of the project
+    -1 thau0=<th0>         Umbral th0 (float). [default: -50]
+    -2 thau1=<th1>         Umbral th1 (float). [default: 0.3]
+    -3 thau2=<th2>         Umbral th2 (float). [default: 0.12]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -47,10 +50,12 @@ int main(int argc, const char *argv[]) {
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
 
-  //float th0 = stof(args["thau0"].asString());
-  //float th1 = stof(args["thau1"].asString());
-  //float th2 = stof(args["thau2"].asString());
-
+  float t0 = stof(args["thau0"].asString());
+  float t1 = stof(args["thau1"].asString());
+  float t2 = stof(args["thau2"].asString());
+  // float t0 = -40;
+  // float t1 = 0.9;
+  // float t2 = 0.5;
 
   // Read input sound file
   unsigned int rate;
@@ -64,8 +69,8 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500);
-
+  PitchAnalyzer analyzer(t0,t1,t2,n_len, rate, PitchAnalyzer::RECT, 50, 500);
+  // analyzer.th0 = th0;
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
