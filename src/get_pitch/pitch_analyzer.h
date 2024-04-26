@@ -10,11 +10,6 @@ namespace upc {
   const float MIN_F0 = 20.0F;    ///< Minimum value of pitch in Hertzs
   const float MAX_F0 = 10000.0F; ///< Maximum value of pitch in Hertzs
   
-  //umbrales determinación sorda sonora
-  float th1 = 0.95; //umbral para R(1)/R(0) r1norm
-  float th2 = 0.51; //umbral para R(P)/R(0) rmaxnorm
-  float th0 = -40; //umbral para potencia
-
   ///
   /// PitchAnalyzer: class that computes the pitch (in Hz) from a signal frame.
   /// No pre-processing or post-processing has been included
@@ -30,6 +25,9 @@ namespace upc {
     void set_window(Window type); ///< pre-compute window
 
   private:
+    float th1; //umbral para R(1)/R(0) r1norm
+    float th2; //umbral para R(P)/R(0) rmaxnorm
+    float th0; //umbral para potencia
     std::vector<float> window; ///< precomputed window
     unsigned int frameLen, ///< length of frame (in samples). Has to be set in the constructor call
       samplingFreq, ///< sampling rate (in samples per second). Has to be set in the constructor call
@@ -53,13 +51,18 @@ namespace upc {
 
 
   public:
-    PitchAnalyzer(	unsigned int fLen,			///< Frame length in samples
+    //umbrales determinación sorda sonora
+ 
+    PitchAnalyzer(  float t0, float t1, float t2, unsigned int fLen,			///< Frame length in samples
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
 					float max_F0 = MAX_F0		///< Pitch range should be restricted to be below this value
 				 )
 	{
+      th0 = t0;
+      th1 = t1;
+      th2 = t2;
       frameLen = fLen;
       samplingFreq = sFreq;
       set_f0_range(min_F0, max_F0);
@@ -108,6 +111,7 @@ namespace upc {
 	///
     void set_f0_range(float min_F0, float max_F0);
 
+    
     
   };
 }
