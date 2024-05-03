@@ -59,7 +59,7 @@ namespace upc {
     ///   or compute and use other ones.
     /// \FET Detector de sonoridad **Implementado**
     // if((zcr>thz)&&(rmaxnorm<th2)){
-    //   return true;;
+    //   return true;
     // }else if((r1norm > th1)||(pot > th0)){
     //   return false;
     // }
@@ -101,13 +101,17 @@ namespace upc {
 
     for (unsigned int i=0; i<x.size() ; ++i){
       
-      if(x[i] > thc){
-        x[i] = x[i] - thc;
-      }else if(x[i] < -thc){
-        x[i] = x[i] + thc;
-      }else{
+      // if(x[i] > thc){
+      //   x[i] = x[i] - thc;
+      // }else if(x[i] < -thc){
+      //   x[i] = x[i] + thc;
+      // }else{
+      //   x[i] = 0;
+      // }
+      if((x[i]>-thc && x[i]<thc)){
         x[i] = 0;
       }
+
     }
 
     

@@ -2,9 +2,9 @@
 
 thau0=${1:-41}
 thau1=${2:-0.94}
-thau2=${3:-0.39}
-thauz=${4:-2000}
-thauc=${5:-0.00001}
+thau2=${3:-0.4}
+thauz=${4:-1500}
+thauc=${5:-0.0061}
 # Establecemos que el código de retorno de un pipeline sea el del último programa con código de retorno
 # distinto de cero, o cero si todos devuelven cero.
 set -o pipefail

@@ -13,19 +13,41 @@ Ejercicios básicos
 - Complete el código de los ficheros necesarios para realizar la estimación de pitch usando el programa
   `get_pitch`.
 
-   * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
+   * FET Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
 
    * Inserte una gŕafica donde, en un *subplot*, se vea con claridad la señal temporal de un segmento de
      unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro *subplot*, se vea con claridad la
 	 autocorrelación de la señal y la posición del primer máximo secundario.
+   ![Autocorrelación](img/img1.png)
 
 	 NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
 	 hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
 
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
+    ```c
+    for (unsigned int l = 0; l < r.size(); ++l) {
+  		/// \TODO Compute the autocorrelation r[l]
+      /// \FET Autocorrelació ***calculada***
+      r[l] = 0;
+      for (unsigned int n = l; n < x.size(); n++){
+        r[l]+=x[n]*x[n-l];
+      }
+      r[l] /= x.size();
+    }
+
+    if (r[0] == 0.0F) //to avoid log() and divide zero 
+      r[0] = 1e-10; 
+    ```
 
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
+   ```c
+   if((pot > th0)&&(((r1norm>th1)||(rmaxnorm > th2))&&zcr<thz)){
+      return false;
+    }else{
+      return true;
+    }
+    ```
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
@@ -39,6 +61,7 @@ Ejercicios básicos
 	    principales candidatos para determinar la sonoridad de la voz: el nivel de potencia de la señal
 		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
 		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
+    ![Candidatos](img/img2.png)
 
 		Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
@@ -48,6 +71,7 @@ Ejercicios básicos
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
+    ![Estimadores](img/img3.png)
      
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
@@ -59,11 +83,11 @@ Ejercicios básicos
   Parámetros               |                       |                          |
   -------------------------| :-------------------: |--------------------------|
   Number of frames         |11200 = 7045 unvoiced + 4155 voiced            
-  Unvoiced frames as voiced|402/7045               |5.71%                     |
-  Voiced frames as unvoiced|708/4155               |17.04%                    |
-  Gross voiced errors      |26/3447                |0.75%                     |
-  MSE of fine errors       |                       |2.03%  
-  **TOTAL**                |                       |**87.21%**
+  Unvoiced frames as voiced|355/7045               |5.04 %                    |
+  Voiced frames as unvoiced|334/4155               |8.04 %                    |
+  Gross voiced errors      |93/3821                |2.43 %                    |
+  MSE of fine errors       |                       |2.66 %  
+  **TOTAL**                |                       |**90.47%**
 
 Ejercicios de ampliación
 ------------------------
@@ -77,6 +101,7 @@ Ejercicios de ampliación
 
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
+![Mensaje de ayuda](img/img4.png)
 
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación
   de pitch.
@@ -90,6 +115,13 @@ Ejercicios de ampliación
   * Optimización **demostrable** de los parámetros que gobiernan el estimador, en concreto, de los que
     gobiernan la decisión sonoro/sordo.
   * Cualquier otra técnica que se le pueda ocurrir o encuentre en la literatura.
+
+**Como técnica de preprocesado, hemos usado un *center clipping*.**
+```c
+if((x[i]>-thc && x[i]<thc)){
+        x[i] = 0;
+      }
+```
 
   Encontrará más información acerca de estas técnicas en las [Transparencias del Curso](https://atenea.upc.edu/pluginfile.php/2908770/mod_resource/content/3/2b_PS%20Techniques.pdf)
   y en [Spoken Language Processing](https://discovery.upc.edu/iii/encore/record/C__Rb1233593?lang=cat).

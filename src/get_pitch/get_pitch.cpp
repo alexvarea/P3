@@ -29,9 +29,9 @@ Options:
     --version   Show the version of the project
     -1, --thau0=FLOAT         Umbral th0 [default: 41]
     -2, --thau1=FLOAT         Umbral th1 [default: 0.94]
-    -3, --thau2=FLOAT         Umbral th2 [default: 0.39]
-    -4, --thauz=FLOAT         Umbral thz [default: 2000]
-    -5, --thauc=FLOAT         Umbral thc [default: 0.00001]
+    -3, --thau2=FLOAT         Umbral th2 [default: 0.4]
+    -4, --thauz=FLOAT         Umbral thz [default: 1500]
+    -5, --thauc=FLOAT         Umbral thc [default: 0.0061]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -60,7 +60,6 @@ int main(int argc, const char *argv[]) {
 
   float aux = -t0;
 
-  cout << tc << endl;
   //std::cout << "Th0: " << aux << "\nTh1: " << t1 << "\nTh2: " << t2 << endl;
 
   // float t0 = -40;
