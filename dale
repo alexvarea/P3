@@ -1,0 +1,28 @@
+#!/bin/bash
+
+resultados=$(mktemp)
+trap "rm -f $resultados" EXIT
+
+for thau0 in $(seq 41 1 41); do
+    for thau1 in $(seq 0.94 0.01 0.94); do
+        for thau2 in $(seq 0.39 0.01 0.39); do
+            for thauz in $(seq 2000 100 2000); do
+                for thauc in $(seq 0.00001 0.00001 0.0001); do
+                    total_line=$(run_get_pitch 41 0.94 0.39 2000 $thauc| grep TOTAL)
+                    total_value=$(echo $total_line | awk '{print $(NF-1)}')
+                    echo "$thauc $total_value"
+                    echo "$thauc $total_value" >> $resultados
+                done
+            done
+        done
+    done
+done
+
+# total_line=$(run_get_pitch $thau0 $thau1 $thau2 $thauz| grep TOTAL)
+#                 total_value=$(echo $total_line | awk '{print $(NF-1)}')
+#                 echo "$thau0 $thau1 $thau2 $thauz $total_value"
+#                 echo "$thau0 $thau1 $thau2 $thauz $total_value" >> $resultados
+
+
+sort -k5 -nr $resultados > resultados_ordenados.txt
+rm $resultados

@@ -53,23 +53,64 @@ namespace upc {
   }
 
 
-  bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
+  bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
     /// \FET Detector de sonoridad **Implementado**
-    if (rmaxnorm > th1){
+    // if((zcr>thz)&&(rmaxnorm<th2)){
+    //   return true;;
+    // }else if((r1norm > th1)||(pot > th0)){
+    //   return false;
+    // }
+    if((pot > th0)&&(((r1norm>th1)||(rmaxnorm > th2))&&zcr<thz)){
       return false;
-    }else if((r1norm > th2)&&(pot > th0)){
-      return false;
+    } else{
+      return true;
     }
-    return true;
+
+    // if (rmaxnorm > th2){
+    //   return false;
+    // }else if((r1norm > th1)&&(pot > th0)){
+    //   return false;
+    // }
+    //return true;
+  }
+
+  float PitchAnalyzer::computezcr(const vector<float> &x, unsigned int fm) const{
+     //COMPUTE ZCR
+    float sum=0;
+    float zcr = 0;
+    float N = x.size();
+    for(int i=1;i<N;i++){
+        if((x[i]<0 && x[i-1]>0) || (x[i]>0 && x[i-1]<0)){//sgn(x[N]) = (x[N] > 0) - (x[N] < 0)
+        sum++;
+      //  printf("%f\n",sum);
+        }
+    }
+    zcr = fm/(2*(N-1))*sum;
+    return zcr;
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
     if (x.size() != frameLen)
       return -1.0F;
 
+   
+    /// \FET Aplicamos preprocesado center clipping sin offset 
+
+    for (unsigned int i=0; i<x.size() ; ++i){
+      
+      if(x[i] > thc){
+        x[i] = x[i] - thc;
+      }else if(x[i] < -thc){
+        x[i] = x[i] + thc;
+      }else{
+        x[i] = 0;
+      }
+    }
+
+    
     //Window input frame
     for (unsigned int i=0; i<x.size(); ++i)
       x[i] *= window[i];
@@ -97,18 +138,22 @@ namespace upc {
 
 
     unsigned int lag = iRMax - r.begin();
-
     float pot = 10 * log10(r[0]);
-   
+    float zcr;
+
+    zcr = computezcr(x,samplingFreq);
+    
+    
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
 #if 0
     if (r[0] > 0.0F)
-      cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
+      //cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << zcr <<endl;
+      //cout << zcr << endl;
 #endif
     
-    if (unvoiced(pot, r[1]/r[0], r[lag]/r[0]))
+    if (unvoiced(pot, r[1]/r[0], r[lag]/r[0],zcr))
       return 0;
     else
       return (float) samplingFreq/(float) lag;

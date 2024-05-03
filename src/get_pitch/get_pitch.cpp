@@ -27,9 +27,11 @@ Usage:
 Options:
     -h, --help  Show this screen
     --version   Show the version of the project
-    -1 thau0=<th0>         Umbral th0 (float). [default: -50]
-    -2 thau1=<th1>         Umbral th1 (float). [default: 0.3]
-    -3 thau2=<th2>         Umbral th2 (float). [default: 0.12]
+    -1, --thau0=FLOAT         Umbral th0 [default: 41]
+    -2, --thau1=FLOAT         Umbral th1 [default: 0.94]
+    -3, --thau2=FLOAT         Umbral th2 [default: 0.39]
+    -4, --thauz=FLOAT         Umbral thz [default: 2000]
+    -5, --thauc=FLOAT         Umbral thc [default: 0.00001]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -49,32 +51,60 @@ int main(int argc, const char *argv[]) {
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+  
+  float t0 = stof(args["--thau0"].asString());
+  float t1 = stof(args["--thau1"].asString());
+  float t2 = stof(args["--thau2"].asString());
+  float tz = stof(args["--thauz"].asString());
+  float tc = stof(args["--thauc"].asString());
 
-  float t0 = stof(args["thau0"].asString());
-  float t1 = stof(args["thau1"].asString());
-  float t2 = stof(args["thau2"].asString());
+  float aux = -t0;
+
+  cout << tc << endl;
+  //std::cout << "Th0: " << aux << "\nTh1: " << t1 << "\nTh2: " << t2 << endl;
+
   // float t0 = -40;
   // float t1 = 0.9;
   // float t2 = 0.5;
 
   // Read input sound file
   unsigned int rate;
-  vector<float> x;
+  
+  vector<float> x; //vector no diezmado
+
   if (readwav_mono(input_wav, rate, x) != 0) {
     cerr << "Error reading input file " << input_wav << " (" << strerror(errno) << ")\n";
     return -2;
   }
 
+  int N = 10; //factior diezmado
+
+  // rate = rate/N;
+
+  
   int n_len = rate * FRAME_LEN;
   int n_shift = rate * FRAME_SHIFT;
+  
+  // int size2 = (int) y.size()/N;
+  // vector<float> x(size2); //vector diezmado
 
+  // for (unsigned int i = 0 ; i < y.size(); i++){
+  //   if(i%N==0){
+  //     x[i/N] = y[i];
+  //   }
+  // }
   // Define analyzer
-  PitchAnalyzer analyzer(t0,t1,t2,n_len, rate, PitchAnalyzer::RECT, 50, 500);
+  PitchAnalyzer analyzer(aux,t1,t2,tz,tc,n_len, rate, PitchAnalyzer::RECT, 50, 500);
   // analyzer.th0 = th0;
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   
+  //CENTRAL CLIPPING
+
+  
+
+
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;

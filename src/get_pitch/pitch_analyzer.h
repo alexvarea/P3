@@ -28,6 +28,8 @@ namespace upc {
     float th1; //umbral para R(1)/R(0) r1norm
     float th2; //umbral para R(P)/R(0) rmaxnorm
     float th0; //umbral para potencia
+    float thz; //umbral zcr
+    float thc; //umbral center clipping
     std::vector<float> window; ///< precomputed window
     unsigned int frameLen, ///< length of frame (in samples). Has to be set in the constructor call
       samplingFreq, ///< sampling rate (in samples per second). Has to be set in the constructor call
@@ -39,6 +41,7 @@ namespace upc {
 	///
     void autocorrelation(const std::vector<float> &x, std::vector<float> &r) const;
 
+    float computezcr(const std::vector<float> &x, unsigned int fm) const;
 	///
 	/// Returns the pitch (in Hz) of input frame x
 	///
@@ -47,13 +50,13 @@ namespace upc {
 	///
 	/// Returns true is the frame is unvoiced
 	///
-    bool unvoiced(float pot, float r1norm, float rmaxnorm) const;
+    bool unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const;
 
 
   public:
     //umbrales determinación sorda sonora
  
-    PitchAnalyzer(  float t0, float t1, float t2, unsigned int fLen,			///< Frame length in samples
+    PitchAnalyzer(  float t0, float t1, float t2, float tz, float tc, unsigned int fLen,			///< Frame length in samples
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
@@ -63,6 +66,8 @@ namespace upc {
       th0 = t0;
       th1 = t1;
       th2 = t2;
+      thz = tz;
+      thc = tc;
       frameLen = fLen;
       samplingFreq = sFreq;
       set_f0_range(min_F0, max_F0);
@@ -110,6 +115,7 @@ namespace upc {
     /// Sets pitch range: takes min_F0 and max_F0 in Hz, sets npitch_min and npitch_max in samples
 	///
     void set_f0_range(float min_F0, float max_F0);
+
 
     
     
